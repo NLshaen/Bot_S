@@ -1,10 +1,12 @@
 ## Interface: 11302
 
 ## Title: Bot_S
+## Author: NLshaen (yan.lucas@free.fr)
 ## Notes: You are not alone
 ## Version: 0.1
 ##
 
 ## SavedVariables
 
-blabla
+## Main
+Bot_S.lua
