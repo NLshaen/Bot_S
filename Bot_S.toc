@@ -1,0 +1,10 @@
+## Interface: 11302
+
+## Title: Bot_S
+## Notes: You are not alone
+## Version: 0.1
+##
+
+## SavedVariables
+
+blabla
