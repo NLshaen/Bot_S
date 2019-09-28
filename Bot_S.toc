@@ -4,9 +4,9 @@
 ## Author: NLshaen (yan.lucas@free.fr)
 ## Notes: You are not alone
 ## Version: 0.1
-##
+## 1.13.2.31882
 
 ## SavedVariables
 
 ## Main
-Bot_S.lua
+core.lua
