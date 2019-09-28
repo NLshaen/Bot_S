@@ -1,15 +1,23 @@
 -- Print message on connect
 message("You are not alone !!!")
 
+local bot = {
+    word = '',
+}
+
+bot.__index = bot
+
+local __bot = {}
+setmetatable(__bot, bot)
+
 local frame = CreateFrame("Frame")
 
--- frame:RegisterEvent("PLAYER_LOGIN")
-
-frame:RegisterEvent("CHAT_MSG_GUILD")
-
-frame:SetScript("OnEvent", function(text, author)
-    bot:onGuildMessage(text, author)
+frame:SetScript("OnEvent", function(_, _,text, author)
+    __bot:onGuildMessage(text, author)
 end)
+
+-- frame:RegisterEvent("PLAYER_LOGIN")
+frame:RegisterEvent("CHAT_MSG_GUILD")
 
 function bot:spam(text)
     SendChatMessage(text, "GUILD")
