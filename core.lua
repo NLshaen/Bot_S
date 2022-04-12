@@ -1,9 +1,61 @@
+-- ------------------------------------------------------------------------------
+-- BOT SCRIPT TESTER
+-- ------------------------------------------------------------------------------
+
+BST = {}
+
+local OriginalSetHyperlink = ItemRefTooltip.SetHyperlink
+function ItemRefTooltip:SetHyperlink(link, ...)
+	if link and string.match(link, "InstanceTrackerLink") then
+		return;
+	end
+	return OriginalSetHyperlink(self, link, ...);
+end
+
+function BST:PrintMsg(msg)
+    local colorCodeStr = "|cff00CB72"
+    local prefix = colorCodeStr.."BOT SCRIPT TESTER: |r"
+    
+    print(prefix..msg)
+end
+
+function BST:ReloadUIPopup(msg)
+	BST:PrintMsg(msg)
+	StaticPopupDialogs["RELOAD_UI"] = {
+		text = "Do you want to reload your UI?", button1 = "Yes", button2 = "No",
+		OnAccept = function()
+			ReloadUI()
+		end,
+	}
+	StaticPopup_Show("RELOAD_UI");
+end
+
+function BST:GetInstanceInfo()
+	local instanceName, instanceType, difficultyID, difficultyName, maxPlayers, dynamicDifficulty, isDynamic, instanceID, instanceGroupSize, LfgDungeonID = GetInstanceInfo()
+
+	local dungeonDifficultyId = GetDungeonDifficultyID()
+	--print ("Player has entered dungeon " .. instanceName .. " with difficulty " .. tostring(dungeonDifficultyId))
+
+	-- Apparently in TBC the heroics are difficulty ID 174 you can verify this by running:
+	-- /run for i = 1, 200 do local name = GetDifficultyInfo(i) if name then print(i, name) end end
+	if (instanceType == "party" and (dungeonDifficultyId == 2 or dungeonDifficultyId == 174)) then -- heroic
+        instanceName = "[H] " .. instanceName
+    end
+
+	return instanceName, instanceType, difficultyID, difficultyName, maxPlayers, dynamicDifficulty, isDynamic, instanceID, instanceGroupSize, LfgDungeonID
+end
+
+if SavedAntiReloadUISettings == nil then SavedAntiReloadUISettings = {} end
+
+BST_CONST_UNIT_NAME_PLAYER = UnitName("player")
+
+
 
 -- ------------------------------------------------------------------------------
 -- MESSAGE ON CONNECT
 -- ------------------------------------------------------------------------------
-message("You are not alone !!!\nNLanae\nyan.lucas@free.fr")
-print("You are not alone !!!\nNLanae\nyan.lucas@free.fr")
+message("BOT Script Tester !!!\nNLshaaen\nyan.lucas@free.fr")
+print("BOT Script Tester !!!\nNLshaaen\nyan.lucas@free.fr")
 
 -- ------------------------------------------------------------------------------
 -- DEBUG FUNCTION CAPTURE CHAT_MSG_GUILD
@@ -13,8 +65,14 @@ function ShowMessageArgs(self,event,...)
    DevTools_Dump({...})
 end
 
-ChatFrame_AddMessageEventFilter("CHAT_MSG_GUILD", ShowMessageArgs)
--- ChatFrame3_AddMessageEventFilter("CHAT_MSG_GUILD", ShowMessageArgs)
+local function myChatFilter(self, event, msg, author, ...)
+end
+
+local debug = GetChannelName("Debug")
+
+ChatFrame_AddMessageEventFilter("CHAT_MSG_WHISPER", myChatFilter)
+-- debug_AddMessageEventFilter(event['CHAT_MSG_GUILD'], myChatFilter)
+
 
 -- ------------------------------------------------------------------------------
 -- LOCAL VARIABLES
@@ -24,8 +82,9 @@ local bot = {
     word = '',
 }
 
-local hello = {'coucou','salut','bonjour','bonsoir','hello','hi','kikoo','ola','yo'}
-local answer_hello = {"Salut, la banane","Yo, alors tu suxxes toujours autant ?","Hello, alors tu viens plus aux soirées?","Bonsoir, la pêche ?","Kikoo, comment vas tu ?"}
+local __hello = {'coucou','salut','bonjour','bonsoir','hello','hi','kikoo','ola','yo'}
+local __thello = hello[random(1,9)]
+local __answer_hello = {"Salut, la banane","Yo, alors tu suxxes toujours autant ?","Hello, alors tu viens plus aux soirées?","Bonsoir, la pêche ?","Kikoo, comment vas tu ?"}
 
 bot.__index = bot
 
@@ -39,33 +98,35 @@ frame:RegisterEvent("PLAYER_LOGIN")
 frame:RegisterEvent("CHAT_MSG_GUILD")
 frame:RegisterEvent("CHAT_MSG_WHISPER")
 
-frame:SetScript("OnEvent", function(_, _, msg, sender)
-    __bot:onGuildMessage(text, author)
+frame:SetScript("OnEvent", function(_, _, text, sender)
+    __bot:onGuildMessage(text, sender)
 end)
 
 -- ------------------------------------------------------------------------------
 -- BOT SEND CHAT GUILD FUNCTION
 -- ------------------------------------------------------------------------------
-function bot:spam(text)
-    local wPlayerName = UnitName('target');
-    -- SendChatMessage(text,'GUILD')
-    SendChatMessage(text,'WHISPER',nil,wPlayerName)
-    --/run SendChatMessage('hello[random(1-9)]','WHISPER',nil,UnitName('target'))
+function bot:spam(msg)
+    -- print (thello)
+    -- local wPlayerName = UnitName('target');
+    SendChatMessage(msg,'GUILD')
+    -- SendChatMessage(msg,'WHISPER',nil,sender)
 end
 
 -- ------------------------------------------------------------------------------
 -- BOT HELLO FUNCTION
 -- ------------------------------------------------------------------------------
 function bot:hello()
-    -- local wPlayerName = UnitName('target');
-    self:spam("[BOT_S] Oh bonsoir comment allez vous ce soir ? un petit verre peut-être ?!!!")
+    -- print (thello)
+    self:spam("[BOT_S] Oh bonsoir" .. sender .. " comment allez vous ce soir ? un petit verre peut-être ?!!!")
 end
 
 -- ------------------------------------------------------------------------------
 -- BOT COMMAND FUNCTION
 -- ------------------------------------------------------------------------------
 function bot:onGuildMessage(msg, sender)
-    local thello = hello[random(1,9)];
+    -- local hello = {'coucou','salut','bonjour','bonsoir','hello','hi','kikoo','ola','yo'}
+    -- local thello = hello[random(1,9)]
+    ChatFrame4:AddMessage(thello, sender)
     if msg == '!bot_start' then
         self:start()
     elseif msg == '!bot_status' then
@@ -74,9 +135,10 @@ function bot:onGuildMessage(msg, sender)
         self:stop()
     elseif msg == '!bot_help' then
         self:help()
-    elseif msg == 'thello' then
-     --  for key,value in pairs(hello) do   -- Stuff to do with keys and values
+    elseif msg == thello then
         self:hello()
+    -- elseif not msg:find(' ') then
+       -- self:guess(msg:lower(), sender)
     end
 end
 
@@ -87,7 +149,7 @@ end
 -- BOT CHAT GUILD FUNCTION
 -- ------------------------------------------------------------------------------
 function bot:start()
-    self:spam("[BOT_S] Actived : J'aime quand tu m'actives !!!")
+    self:spam("[BTS] Actived : J'aime quand tu m'actives !!!")
 end
 
 function bot:stop()

@@ -1,0 +1,76 @@
+## Interface: 20504
+## Title: |cff1784d1Bot_Script_Tester|r
+## Version: 0.11
+## Author: NLshaaen
+## Notes: BOT SCRIPT TESTER - BST
+## 1.13.2.31882
+
+#testing
+# /console scriptErrors 1
+# /run print((select(4, GetBuildInfo())));
+# /eventtrace
+
+# https://wowwiki.fandom.com/wiki/Saving_variables_between_game_sessions
+# Variables are saved and loaded in the global environment 
+#   If you want to save a local value, you have to first read it from the global environment (_G table) on ADDON_LOADED, then return it into the global environment before the player logs out
+# Saved variables are loaded after the addon code is executed 
+#   They cannot be accessed immediately, and will overwrite any "defaults" the addon may place in the global environment during its loading process.
+# Only some variable types may be saved 
+#   Strings, booleans, numbers and tables are the only variable types that will be saved (functions, userdata and coroutines will not). Circular references in tables may not be preserved.
+# Saving tables 
+#   Tables are a great way to avoid having to use a large number of names in the global namespace. However, they may be more difficult to initialize to default values when your addon is updated and you add or remove a key. Multiple saved variables that reference the same table will each create a separate (but identical) instance of the table, and as such will no longer point to the same table when they are loaded again.
+
+## SavedVariablesPerCharacter: SavedPayments, SavedHistoricalPayments, SavedHistoricalPaymentsV2, SavedWindowSettings, SavedComments, SavedSettings, SavedAntiReloadUISettings
+## SavedVariables: SavedAccountLockouts, SavedCharacterLockouts, SavedStatistics, SpeedyAutoLootDB
+
+Core.lua
+
+# Libs
+Libs\embeds.xml
+
+# Default
+Templates\HybridScrollFrameHistory.xml
+Templates\LockoutStatistics.xml
+Templates\InstanceLockoutHistory.xml
+
+# Helpers
+Helpers\LuaHelper.lua
+Helpers\DebugHelper.lua
+Helpers\UIHelper.lua
+Helpers\DateTimeHelper.lua
+Helpers\TableHelper.lua
+
+# Models
+Models\Settings.lua
+Models\AccountLockout.lua
+Models\CharacterLockout.lua
+Models\Payment.lua
+Models\Comment.lua
+Models\Statistics.lua
+
+# Features
+Features\Communication.lua
+Features\LockoutTracker.lua
+Features\StatisticsTracker.lua
+Features\Timer.lua
+Features\SpeedyAutoLoot.lua
+Features\LootTracker.lua
+Features\AutoFollow.lua
+Features\AntiAfk.lua
+
+# UI components
+UI\GUI.lua
+UI\GUIPayments.lua
+UI\GUIPaymentComment.lua
+UI\GUILockoutStatistics.lua
+UI\GUILockouts.lua
+UI\GUISettings.lua
+
+# Extensions
+Extensions\TradeWindow.lua
+Extensions\SlashCommands.lua
+Extensions\EventHandler.lua
+Extensions\NitIntegration.lua
+
+# Test cases
+Tests\Tests.lua

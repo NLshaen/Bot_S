@@ -1,2 +1,2 @@
-# Bot_S
-Vous ne vous sentirez plus jamais seul
+# Bot_Script_Tester
+BST - Tester vos scripts facilement
